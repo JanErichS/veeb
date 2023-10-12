@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
+</head>
+<body>
+	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<h1>Külastajate nimed</h1>
+	<hr>
+	<h6>ja aeg</h6>
+	<ul>
+		<% guest.forEach(function(person) { %>
+			<li><%= person %></li>
+		<% }); %>
+	</ul>
+	<hr>
+	<ul>
+		<li> <a href="/">Avalehele</a></li>
+	</ul>
+	<hr>
+</body>
+</html>

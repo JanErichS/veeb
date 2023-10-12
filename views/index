@@ -5,17 +5,11 @@
 	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
 </head>
 <body>
-	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<img src="public/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
 	<h1>Jan-Erich Sigur</h1>
 	<p>See veebileht on valminud <a href="https://www.tlu.ee/" target="_blank">TLÜ</a> Digitehnoloogiate instituudi informaatika eriala õppetöö raames.</p>
 	<hr>
 	<p>Ma ei tea mida siia kirjutada</p>
-	<hr>
-	<ul>
-		<li> <a href="/timenow">Praegune aeg</a></li>
-		<li><a href="/folk">Vanasõnad</a></li>
-		<li><a href="/guests">Lehe külastajad</a></li>
-	</ul>
 	<hr>
 </body>
 </html>

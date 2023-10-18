@@ -10,8 +10,8 @@
 	<hr>
 	<h6>ja aeg</h6>
 	<ul>
-		<% guests.forEach(function(guest) { %>
-			<li><%= guest %></li>
+		<% person.forEach(function(name, num) { %>
+			<li><%= name + ', ' + nameDate[num] %></li>
 		<% }); %>
 	</ul>
 	<hr>

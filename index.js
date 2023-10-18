@@ -37,11 +37,36 @@ app.get('/guests', (req,res)=>{
         }
         else{
             guestList = data.split(';');
-            console.log(guestList);
-            res.render('namelist', {guest: guestList});
+            guestList = openArr(guestList)
+            let person = [];
+            let nameDate = [];
+            let i = 0;
+            let m = 0;
+            while (i < guestList.length){
+                let first = guestList[i];
+                let last = guestList[i + 1];
+                person = person.concat(first + " " + last);
+                i = i + 3; // [eesnimi, pnimi, aeg; ...]
+            }
+            while(m < guestList.length){
+                let date = guestList[m + 2];
+                nameDate = nameDate.concat(date);
+                m = m + 3;
+            }
+            /*console.log(guestList)
+            console.log(person)*/
+            nameDate = dateTime.ENtoET(nameDate);
+            res.render('namelist', {guest: guestList, person: person, nameDate: nameDate}); // guestList -> kõik nimekirja elemendid; person -> ainult nimi; date -> kuupäev
         }
     });
 });
+
+function openArr(bigArr){
+    bigArr.pop(); // eemaldab viimase tühja elemendi
+    smolArr = bigArr.toString(); // muudab array tagasi stringiks
+    bigArr = smolArr.split(','); // loob stringist uue array, ilma komadetta --> väga ebaefektiivne.
+    return bigArr
+}
 
 app.listen(5133);
 

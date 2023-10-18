@@ -1,4 +1,5 @@
 const monthNamesET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
+require
 
 const dateETformatted = function(){
     
@@ -29,5 +30,21 @@ const timeOfDayET = function(){
     return partOfDay;
 }
 
+// us time -> kuu/päev/aasta
+// nt 10/11/2023 --> 11. oktoober 2023
+const ENtoET = function(dateEN){
+    let timeArr = dateEN;
+    let timeStr = timeArr.toString();
+    timeArr = timeStr.split('/');
+    timeStr = timeArr.toString();
+    timeArr = timeStr.split(',');
+    let timeENtoET = ""
+    let i = 0
+    while (i< timeArr.length){
+    timeENtoET = timeENtoET.concat(timeArr[i+1] + "." + monthNamesET[Number(timeArr[i])-1] + " " + timeArr[i+2] + ";");
+    i = i + 3 };
+    return timeArr = timeENtoET.split(';') 
+}
+
 // ekspordib kõik asjad
-module.exports = {dateETformatted: dateETformatted, timeETformatted: timeETformatted, monthsET: monthNamesET, timeOfDayET: timeOfDayET}
+module.exports = {dateETformatted: dateETformatted, timeETformatted: timeETformatted, monthsET: monthNamesET, timeOfDayET: timeOfDayET, ENtoET: ENtoET}

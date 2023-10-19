@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
+</head>
+<body>
+	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<h1>Mõned Eesti filmid</h1>
+	<hr>
+	<ul>
+		<li> <a href="/movies">Eesti filmide avaleht</a></li>
+		<li> <a href="/">Avalehele</a></li>
+	</ul>
+	<hr>
+	<h2>Andmebaasis olevate Eesti filmide loend</h2>
+	<hr>
+	<ol>
+		<% filmList.forEach(function(film){ %>
+			<li><%= film.title %>, toodetud <%= film.production_year %>, <%= film.duration %>-minutilise kestusega</li> 
+		<% }); %>
+	</ol>
+	<hr>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
+</head>
+<body>
+	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<h1>Mõned Eesti filmid</h1>
+	<hr>
+	<ul>
+		<li> <a href="/movies">Eesti filmide avaleht</a></li>
+		<li> <a href="/">Avalehele</a></li>
+	</ul>
+	<hr>
+	<h2>Lisa filmitegelane</h2>
+	<hr>
+	<form method="POST">
+		<label for="firstNameInput"> Filmitegelase eesnimi: </label>
+		<input type="text" name="firstNameInput" id="firstNameInput" placeholder="Eesnimi" required>
+		<br>
+		<label for="lastNameInput">Filmitegelase perekonnanimi: </label>
+		<input type="text" name="lastNameInput" id="lastNameInput" placeholder="Perekonnanimi" required>
+		<br>
+		<label for="dateOfBirth">Filmitegelase sünnikuupäev: </label>
+		<input type="date" name="dateOfBirth" id="dateOfBirth" required>
+		<br>
+		<input type="submit" name="personSubmit" value="Salvesta">
+	</form>
+	<hr>
+	<p><%= locals.notice || "Ootel!" %></p>
+</body>
+</html>

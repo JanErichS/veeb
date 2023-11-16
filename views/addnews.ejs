@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
+</head>
+<body>
+	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<h1>Uudised</h1>
+	<hr>
+	<ul>
+		<li> <a href="/news">Tagasi</a></li>
+		<li> <a href="/">Avalehele</a></li>
+	</ul>
+	<hr>
+	<h2>Lisa uudis</h2>
+	<hr>
+	<form method="POST">
+		<label for="newsTitleInput">Uudise pealkiri: </label>
+		<input type="text" name="newsTitleInput" id="newsTitleInput" placeholder="Uudise pealkiri..." required>
+		<br>
+		<label for="contentInput">Uudise sisu: </label>
+		<br>
+		<textarea id="contentInput" name="contentInput" placeholder="Uudise sisu" required rows="5" cols="80" maxlength="2000"></textarea>
+		<br>
+		<label for="expireInput">Uudise aegumiskuupäev: </label>
+		<input type="date" name="expireInput" id="expireInput" required>
+		<br>
+		<input type="submit" name="newsSubmit" value="Lisa">
+	</form>
+	<hr>
+	<p><%= locals.confirmation || "Ootel!" %></p>
+</body>
+</html>

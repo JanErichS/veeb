@@ -104,17 +104,65 @@ app.get('/movies/addfilmperson', (req, res)=>{
     res.render('addfilmperson');
 });
 
+// ühe filmi "esileht"
 app.get('/movies/singlemovie', (req, res)=>{
-    let sql = 'SELECT count(id) FROM movie';
+    let sql = 'SELECT id FROM movie';
     conn.query(sql, (err, result)=>{
         if (err){
             throw err;
         }
         else{
-            console.log(result)
             res.render('singlemovie', {movieNum: result})
         }
     });
+});
+
+// UUDISED
+// avaleht
+app.get('/news', (req, res)=>{
+    res.render('news');
+});
+
+// uudiste lugemine
+app.get('/news/read', (req, res)=>{
+    let sql = 'SELECT id, title FROM vp_news WHERE expire > '+ dateTime.dateSql() +' AND deleted IS NULL ORDER BY id DESC';
+    conn.query(sql, (err, result)=>{
+        if (err){
+            throw err;
+        }
+        else{
+            res.render('readnews', {newsList: result})
+        }
+    });
+});
+
+// uudise lugemine läbi id
+app.get('/news/read/:id', (req, res)=>{
+    let sql = 'SELECT title, content, UNIX_TIMESTAMP(added) AS `time` FROM vp_news WHERE id=?';
+    let notice = ''
+    conn.query(sql, [req.params.id], (err, result)=> {
+        if (err){
+            notice = 'Midagi läks valesti!\n Proovi uuesti!'
+            res.render('readnewsbyid', {notice:notice})
+            throw err;
+        }
+        else {
+            let date = result[0].time;
+            date = dateTime.dateTimeSql(date)
+            res.render('readnewsbyid', {news:result, time:date})
+        }
+    });
+});
+
+// uudise lugemine (valik läbi id+keele)
+/*app.get('/news/read/:id/:lang', (req, res)=>{
+    console.log(req.query);
+    res.send('Tahame uudist, mille id on: ' + req.params.id + ' Ja mille keel on: ' + req.params.lang);
+});*/
+
+// uudise lisamine
+app.get('/news/add', (req, res)=>{
+    res.render('addnews');
 });
 
 // funktsioonid
@@ -125,6 +173,7 @@ function openArr(bigArr){
     return bigArr
 };
 
+// FILMI ROOTING
 // formsi jaoks post rooting
 app.post('/movies/addfilmperson', (req, res)=>{
     let notice = '';
@@ -142,8 +191,36 @@ app.post('/movies/addfilmperson', (req, res)=>{
     });
 });
 
+// Ühe filmi päring db-st
 app.post('/movies/singlemovie', (req, res)=>{
+    let sql = 'SELECT title, duration, production_year FROM movie WHERE id=?';
+    conn.query(sql, [req.body.singleMovieInput], (err, result)=>{
+        if (err){
+            res.render('singlemovie');
+            throw err;
+        }
+        else{
+            res.render('singlemovie', {movieNum: result});
+        }
+    });
+});
 
+// UUDISE POST
+// uudise lisamine
+app.post('/news/add', (req,res)=>{
+    let sql = 'INSERT INTO vp_news (id, title, content, expire, userid) VALUES(NULL,?,?,?,1)';
+    let confirmation = '';
+    conn.query(sql, [req.body.newsTitleInput, req.body.contentInput, req.body.expireInput], (err, result)=>{
+        if (err){
+            confirmation = 'Tekkis viga (bad ending; check console)';
+            res.render('addnews', {confirmation:confirmation})
+            throw err;
+        }
+        else{
+            confirmation = 'Uudis pealkirjaga: "' + req.body.newsTitleInput + '" sai salvestatud!';
+            res.render('addnews', {confirmation:confirmation})
+        }
+    });
 });
 
 app.listen(5133);
@@ -163,9 +240,14 @@ app.listen(5133);
  //     conn.query(sql, (err, result, fields) --> fields annab tehnilise mumbo-jumbo
  // formsidel peab olema eraldi root POSTile js failis
  // app.use(bodyparser.urlencoded({extended: false})); võtab päringu(req) ning decodeerib selle; extended false --> andmed on ainult tekstiinfo
- // app.set('view engine', 'ejs'); --> defineerib app engine  
+ // app.set('view engine', 'ejs'); --> defineerib app engine; laseb panna nt response.render('index') ilma faililaiendit defineerimata.
  // app.use(express.static('public')); ---> lubab public kataloogi kasutada
  // conn.end() -> lõpetab ühenduse db.ga
  // INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?,?) --> küsimärgid ei lase teha injection type attacki nii kergelt? 
  // conn.query(sql, [req.body.firtNameInput, req.body.lastNameInput, req.body.dateOfBirth]) paneb küsimärkide asemele andmed?
  // addfilmperson --> locals.notice kui väärtus puudub, näitab tühjust
+
+
+ // html commentid
+ // <!-- cols="mingi number" mitu tähemärki võib olla igal real.; maxlenght="mingi number" palju võib tähemärke kokku olla.-->
+

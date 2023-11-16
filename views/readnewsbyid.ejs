@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Jan-Erich Sigur; Veebiprogrammeerimine 2023</title>
+</head>
+<body>
+	<img src="/banner/banner.png" alt="Veebiprogrammeerimise kursuse bänner">
+	<h1>Uudised</h1>
+	<hr>
+	<ul>
+		<li> <a href="/news/read">Tagasi</a></li>
+		<li> <a href="/news">Uudiste avaleht</a></li>
+		<li> <a href="/">Avalehele</a></li>
+	</ul>
+	<hr>
+	<h2><%= news[0].title %></h2>
+	<h4>Lisatud: <%= time %></h4>
+	<hr>
+	<p><%= news[0].content %></p>
+</body>
+</html>

@@ -46,5 +46,16 @@ const ENtoET = function(dateEN){
     return timeArr = timeENtoET.split(';') 
 }
 
+// SQL-formaadis aeg
+const dateSql = function(){
+    let timeNow = new Date();
+    return timeNow.getFullYear() + '-' + timeNow.getMonth() + '-' + timeNow.getDate();
+}
+
+const dateTimeSql = function(unix){
+    let timeNow = new Date(unix * 1000);
+    return timeNow.getDate() + ". " + monthNamesET[timeNow.getMonth()] + " " + timeNow.getFullYear();
+}
+
 // ekspordib kõik asjad
-module.exports = {dateETformatted: dateETformatted, timeETformatted: timeETformatted, monthsET: monthNamesET, timeOfDayET: timeOfDayET, ENtoET: ENtoET}
+module.exports = {dateETformatted: dateETformatted, timeETformatted: timeETformatted, monthsET: monthNamesET, timeOfDayET: timeOfDayET, ENtoET: ENtoET, dateSql:dateSql, dateTimeSql: dateTimeSql};

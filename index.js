@@ -3,14 +3,19 @@ const fs = require('fs');
 const app = express(); 
 const mysql = require('mysql2');
 const bodyparser = require('body-parser');
+const multer = require('multer')
+const sharp = require('sharp');
+// vahevara seadistus
+const upload = multer({dest: './public/upload/orig/'});
 
 // isetehtud moodulid
 const dateTime = require('./dateTime_ET');
-const dbInfo = require('../../vp23config')
+const dbInfo = require('../../vp23config');
+const { timeStamp } = require('console');
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
-app.use(bodyparser.urlencoded({extended: false}));
+app.use(bodyparser.urlencoded({extended: true}));
 
 // andmebaasiga ühendus
 const conn = mysql.createConnection({
@@ -165,6 +170,14 @@ app.get('/news/add', (req, res)=>{
     res.render('addnews');
 });
 
+app.get('/photoupload', (req, res)=>{
+    res.render('photoupload')
+});
+
+app.get('/photogallery', (req,res)=>{
+    res.render('photogallery')
+});
+
 // funktsioonid
 function openArr(bigArr){
     bigArr.pop(); // eemaldab viimase tühja elemendi
@@ -213,12 +226,43 @@ app.post('/news/add', (req,res)=>{
     conn.query(sql, [req.body.newsTitleInput, req.body.contentInput, req.body.expireInput], (err, result)=>{
         if (err){
             confirmation = 'Tekkis viga (bad ending; check console)';
-            res.render('addnews', {confirmation:confirmation})
+            res.render('addnews', {confirmation:confirmation});
             throw err;
         }
         else{
             confirmation = 'Uudis pealkirjaga: "' + req.body.newsTitleInput + '" sai salvestatud!';
-            res.render('addnews', {confirmation:confirmation})
+            res.render('addnews', {confirmation:confirmation});
+        }
+    });
+});
+
+
+// PILDID
+// pildi üleslaadimine
+app.post('/photoupload', upload.single('photoInput'), (req,res)=>{
+    const fileRename = 'vp_' + Date.now() + '.jpg'; // paneb jõuga failinimeks: vp_millisekundid.üleslaadimishetkel.jpg; kuna väärtus muutub ainult 1 kord, sellep constant
+    fs.rename(req.file.path, './public/upload/orig/' + fileRename, (err)=>{
+        if (err){
+            console.log('Faili laadimise viga!' + err);
+        }
+    });
+    // Kaks väiksema mõõduga pildivarianti
+    sharp('./public/upload/orig/' + fileRename).resize(100,100).jpeg({quality: 90}).toFile('./public/upload/thumbs/' + fileRename);
+    sharp('./public/upload/orig/' + fileRename).resize(800,600).jpeg({quality: 90}).toFile('./public/upload/normal/' + fileRename);
+
+    // foto andmed DB-sse
+    let sql = 'INSERT INTO vpgallery (filename, originalename, alttext, privacy, userid) VALUES(?,?,?,?,?)'
+    const userid = 1;
+    let notice = '';
+    conn.query(sql, [fileRename, req.file.originalname, req.body.altInput, req.body.privacyInput, userid], (err, result)=>{
+        if (err){
+            notice = 'Pildiandmete salvestamine ebaõnnestus';
+            res.render('photoupload', {notice:notice});
+            throw err;
+        }
+        else{
+            notice = 'Pildi "' + req.file.originalname + '" salvestamine õnnestus';
+            res.render('photoupload', {notice: notice});
         }
     });
 });
@@ -237,6 +281,8 @@ app.listen(5133);
  // res.render('timenow', {dateN: dateNow, timeN: timeNow});; --> {objekti nimetus: objekti väärtus, uue objekt inimetus: uue objekt iväärtus}
  // <%= ejs muutuja nimi %> ; ejs moodulite kasutamine html-is
 
+ // NB! app.use(bodyparser.urlencoded({extended: false})); ----> FALSE ainult kui tekst ning kui tekst + midagi, siis TRUE
+
  //     conn.query(sql, (err, result, fields) --> fields annab tehnilise mumbo-jumbo
  // formsidel peab olema eraldi root POSTile js failis
  // app.use(bodyparser.urlencoded({extended: false})); võtab päringu(req) ning decodeerib selle; extended false --> andmed on ainult tekstiinfo
@@ -246,8 +292,12 @@ app.listen(5133);
  // INSERT INTO person (first_name, last_name, birth_date) VALUES(?,?,?) --> küsimärgid ei lase teha injection type attacki nii kergelt? 
  // conn.query(sql, [req.body.firtNameInput, req.body.lastNameInput, req.body.dateOfBirth]) paneb küsimärkide asemele andmed?
  // addfilmperson --> locals.notice kui väärtus puudub, näitab tühjust
+ // posti lahtiarutamiseks oleks hea kasutada body parserit --> teeb lihtsamaks
 
+
+ // multer lisamoodul --> middleman failide salvestamiseks
 
  // html commentid
  // <!-- cols="mingi number" mitu tähemärki võib olla igal real.; maxlenght="mingi number" palju võib tähemärke kokku olla.-->
+ // hmtl id alati ainulaadne; name "saadab" js failile
 
